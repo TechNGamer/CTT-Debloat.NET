@@ -77,10 +77,21 @@ namespace CTTDebloatNET.Models {
 
 					programs = JsonConvert.DeserializeObject<Dictionary<string, ProgramInfo[]>>( json );
 
-					tmpUtils.AddRange( programs![UTILITIES_KEY] );
-					tmpBrowsers.AddRange( programs![BROWSERS_KEY] );
-					tmpMult.AddRange( programs![MULTIMEDIA_KEY] );
-					tmpDoc.AddRange( programs![DOCUMENTS_KEY] );
+					if ( programs!.ContainsKey( UTILITIES_KEY ) ) {
+						tmpUtils.AddRange( programs![UTILITIES_KEY] );
+					}
+
+					if ( programs!.ContainsKey( BROWSERS_KEY ) ) {
+						tmpBrowsers.AddRange( programs![BROWSERS_KEY] );
+					}
+
+					if ( programs!.ContainsKey( MULTIMEDIA_KEY ) ) {
+						tmpMult.AddRange( programs![MULTIMEDIA_KEY] );
+					}
+
+					if ( programs!.ContainsKey( DOCUMENTS_KEY ) ) {
+						tmpDoc.AddRange( programs![DOCUMENTS_KEY] );
+					}
 				} catch ( Exception ) {
 					// We'll just ignore the exception.
 				}
