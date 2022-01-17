@@ -54,34 +54,6 @@ namespace CTTDebloatNET.Views {
 			writer.Write( errorStr );
 		}
 
-		private static void CreateConsoleOutput() {
-			const uint STD_OUTPUT_HANDLE = 0xFFFFFFF5;
-
-			AllocConsole();
-
-			var defaultStdOut = new IntPtr( 7 );
-			var currentStdOut = GetStdHandle( STD_OUTPUT_HANDLE );
-
-			if ( currentStdOut != defaultStdOut ) {
-				SetStdHandle( STD_OUTPUT_HANDLE, defaultStdOut );
-			}
-
-			var writer = new StreamWriter( Console.OpenStandardOutput() ) {
-				AutoFlush = true
-			};
-
-			Console.SetOut( writer );
-
-			[DllImport( "kernel32.dll" )]
-			static extern IntPtr GetStdHandle( uint nStdHandle );
-
-			[DllImport( "kernel32.dll" )]
-			static extern void SetStdHandle( uint nStdHandle, IntPtr handle );
-
-			[DllImport( "kernel32.dll" )]
-			static extern bool AllocConsole();
-		}
-
 		public MainWindow() {
 			InitializeComponent();
 			#if DEBUG
