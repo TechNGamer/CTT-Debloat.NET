@@ -141,10 +141,9 @@ namespace CTTDebloatNET.ViewModels {
 			// ReSharper restore StringLiteralTypo
 		}
 
-		private Task TweakHandler( ButtonRequest request ) {
-			// This method only handles tweaks.
-			// ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
-			return request switch {
+		// This method is simply used to reduce the amount of entries in the `ProcessRequest` method, in my opinion, helps with readability.
+		[SuppressMessage( "ReSharper", "SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault" )]
+		private Task TweakHandler( ButtonRequest request ) => request switch {
 				// Methods that already return a Task.
 				ButtonRequest.DeleteOneDrive       => Tweaks.ToggleOneDrive( false ),
 				ButtonRequest.EnableOneDrive       => Tweaks.ToggleOneDrive( true ),
