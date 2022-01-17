@@ -123,7 +123,7 @@ namespace CTTDebloatNET.Models {
 			output( $"Preparing to install {info.DisplayName} onto the computer.\nInfo Data:\n{info}\n" );
 
 			// Loops through each ID to install all the programs associated with that program.
-			foreach ( var id in info.IDs ) {
+			foreach ( var id in info.Ids ) {
 				using var wingetProc = new Process {
 					StartInfo = {
 						FileName  = WINGET,

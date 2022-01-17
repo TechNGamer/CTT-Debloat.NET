@@ -15,7 +15,7 @@ namespace CTTDebloatNET.Models {
 		/// <summary>
 		/// The IDs required to install the program.
 		/// </summary>
-		public string[] IDs { get; }
+		public string[] Ids { get; }
 
 		[JsonConstructor]
 		public ProgramInfo( [JsonProperty("displayName")]string name, [JsonProperty("id")]string[] ids ) {
@@ -36,14 +36,14 @@ namespace CTTDebloatNET.Models {
 			}
 
 			DisplayName = name;
-			IDs         = ids;
+			Ids         = ids;
 		}
 
 		public override string ToString() {
 			var builder = new StringBuilder( "Name: " ).AppendLine( DisplayName );
 
-			for ( var i = 0; i < IDs.Length; ++i ) {
-				builder.Append( "ID [" ).Append( i + 1 ).Append( "]: " ).AppendLine( IDs[i] );
+			for ( var i = 0; i < Ids.Length; ++i ) {
+				builder.Append( "ID [" ).Append( i + 1 ).Append( "]: " ).AppendLine( Ids[i] );
 			}
 
 			return builder.ToString();
