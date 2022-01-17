@@ -92,8 +92,8 @@ namespace CTTDebloatNET.Models {
 					if ( programs!.ContainsKey( DOCUMENTS_KEY ) ) {
 						tmpDoc.AddRange( programs![DOCUMENTS_KEY] );
 					}
-				} catch ( Exception ) {
-					// We'll just ignore the exception.
+				} catch ( Exception e ) {
+					Debug.WriteLine( e );
 				}
 
 				Utils         = tmpUtils.ToArray();
