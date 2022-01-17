@@ -1,0 +1,164 @@
+﻿// This contains lists of the programs in 3 separate lists for each category.
+{
+  // This, as the key says, is the utilities list.
+  "utilities": [
+    // This object will turn into the ProgramInfo struct.
+    {
+      "displayName": "Windows Terminal",
+      "id": [
+        "Microsoft.WindowsTerminal"
+      ]
+    },
+    {
+      "displayName": "Power Toys",
+      "id": [
+        "Microsoft.PowerToys"
+      ]
+    },
+    {
+      "displayName": "7-Zip",
+      "id": [
+        "7zip.7zip"
+      ]
+    },
+    {
+      "displayName": "AutoHotkey",
+      "id": [
+        "Lexikos.AutoHotkey"
+      ]
+    },
+    {
+      "displayName": "Discord",
+      "id": [
+        "Discord.Discord"
+      ]
+    },
+    {
+      "displayName": "Github Desktop",
+      "id": [
+        "GitHub.GutHubDesktop"
+      ]
+    },
+    {
+      "displayName": "Translucent Taskbar",
+      "id": [
+        "TranslucentTB.TranslucentTB"
+      ]
+    },
+    {
+      "displayName": "Etcher USB Creator",
+      "id": [
+        "Balena.Etcher"
+      ]
+    },
+    {
+      "displayName": "PuTTY WinSCP",
+      "id": [
+        "PuTTY.PuTTY",
+        "WinSCP.WinSCP"
+      ]
+    },
+    {
+      "displayName": "Advanced IP Scanner",
+      "id": [
+        "Famatech.AdvancedIPScanner"
+      ]
+    },
+    {
+      "displayName": "Everything Search",
+      "id": [
+        "voidtools.Everything"
+      ]
+    },
+    {
+      "displayName": "Ear Trumpet",
+      "id": [
+        "File-New-Project.EarTrumpet"
+      ]
+    }
+  ],
+  "browsers": [
+    {
+      "displayName": "Brave",
+      "id": [
+        "BraveSoftware.BraveBrowser"
+      ]
+    },
+    {
+      "displayName": "Firefox",
+      "id": [
+        "Mozilla.Firefox"
+      ]
+    },
+    {
+      "displayName": "Google Chrome",
+      "id": [
+        "Google.Chrome"
+      ]
+    }
+  ],
+  "multimedia": [
+    {
+      "displayName": "ShareX",
+      "id": [
+        "ShareX.ShareX"
+      ]
+    },
+    {
+      "displayName": "ImageGlass",
+      "id": [
+        "DuongGieuPhap.ImageGlass"
+      ]
+    },
+    {
+      "displayName": "GIMP",
+      "id": [
+        "GIMP.GIMP"
+      ]
+    },
+    {
+      "displayName": "VLC",
+      "id": [
+        "VideoLAN.VLC"
+      ]
+    },
+    {
+      "displayName": "Media Player Classic",
+      "id": [
+        "clsid2.mpc-hc"
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "displayName": "VS Codium",
+      "id": [
+        "VSCodium.VSCodium"
+      ]
+    },
+    {
+      "displayName": "VS Code",
+      "id": [
+        "Microsoft.VisualStudioCode"
+      ]
+    },
+    {
+      "displayName": "Notepad++",
+      "id": [
+        "Notepad++.Notepad++"
+      ]
+    },
+    {
+      "displayName": "Adobe Reader DC",
+      "id": [
+        "Adobe.AdobeAcrobatReaderDC"
+      ]
+    },
+    {
+      "displayName": "Sumatra PDF",
+      "id": [
+        "SumatraPDF.SumatraPDF"
+      ]
+    }
+  ]
+}
