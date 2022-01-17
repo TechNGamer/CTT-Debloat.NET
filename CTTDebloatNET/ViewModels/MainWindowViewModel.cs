@@ -102,7 +102,13 @@ namespace CTTDebloatNET.ViewModels {
 		private async Task ProcessButtonRequestHandler( ButtonRequest request ) {
 			WriteOutput( "Beginning the request, depending on the request, this might take a while." );
 
-			await ProcessRequest( request );
+			try {
+				await ProcessRequest( request );
+			} catch ( Exception ) {
+				WriteOutput( "The request finished with an error." );
+
+				throw;
+			}
 
 			WriteOutput( "The request is finished." );
 		}
