@@ -40,10 +40,10 @@ namespace CTTDebloatNET.Models {
 		}
 
 		public override string ToString() {
-			var builder = new StringBuilder( "Name:\t" ).AppendLine( DisplayName );
+			var builder = new StringBuilder( "Name: " ).AppendLine( DisplayName );
 
 			for ( var i = 0; i < IDs.Length; ++i ) {
-				builder.Append( "ID [" ).Append( i + 1 ).Append( "]:\t" ).AppendLine( IDs[i] );
+				builder.Append( "ID [" ).Append( i + 1 ).Append( "]: " ).AppendLine( IDs[i] );
 			}
 
 			return builder.ToString();
