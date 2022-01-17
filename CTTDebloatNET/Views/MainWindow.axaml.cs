@@ -1,12 +1,16 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reactive;
-using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
+using Avalonia.Threading;
+using CTTDebloatNET.Models;
 using CTTDebloatNET.ViewModels;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.BaseWindows.Base;
@@ -55,12 +59,65 @@ namespace CTTDebloatNET.Views {
 		}
 
 		public MainWindow() {
+			Task.Run( async () => {
+				await Dispatcher.UIThread.InvokeAsync( async () => {
+					while ( true ) {
+						if ( ViewModel == null ) {
+							Debug.WriteLine( "Still waiting for the ViewModel." );
+						
+							await Task.Delay( 10 );
+						} else {
+							break;
+						}
+					}
+				} );
+				await Dispatcher.UIThread.InvokeAsync( AddInstallButtons );
+			} );
+			
 			InitializeComponent();
 			#if DEBUG
 			this.AttachDevTools();
 			#endif
 
 			RxApp.DefaultExceptionHandler = Observer.Create<Exception>( ShowErrorDialogAsync );
+		}
+
+		private void AddInstallButtons() {
+			var installPanel = this.FindControl<StackPanel>( "InstallStackPanel" );
+			
+			installPanel.Children.Add( new TextBlock() {
+				Text = "Utilities"
+			} );
+
+			AddProgramsToList( ProgramHandler.Utils );
+
+			installPanel.Children.Add( new TextBlock {
+				Text = "Browsers"
+			} );
+
+			AddProgramsToList( ProgramHandler.Browsers );
+
+			installPanel.Children.Add( new TextBlock {
+				Text = "Multimedia"
+			} );
+
+			AddProgramsToList( ProgramHandler.Multimedia );
+
+			installPanel.Children.Add( new TextBlock {
+				Text = "Document Tools"
+			} );
+
+			AddProgramsToList( ProgramHandler.DocumentTools );
+
+			void AddProgramsToList( IEnumerable<ProgramInfo> programs ) {
+				foreach ( var info in programs ) {
+					installPanel.Children.Add( new Button {
+						Command          = ViewModel!.InstallProgram,
+						CommandParameter = info,
+						Content          = info.DisplayName,
+					} );
+				}
+			}
 		}
 
 		private async void ShowErrorDialogAsync( Exception ex ) {
@@ -72,7 +129,7 @@ namespace CTTDebloatNET.Views {
 			switch ( answer ) {
 				case ButtonResult.Yes:
 					var errLog = CreateErrorLog( ex );
-					
+
 					WriteErrorToFile( errLog, ex.GetType() );
 
 					await MessageBoxManager.GetMessageBoxStandardWindow(

@@ -21,7 +21,6 @@
 			<Setter Property="HorizontalContentAlignment" Value="Center" />
 			<Setter Property="VerticalContentAlignment" Value="Center" />
 			<Setter Property="Margin" Value="1" />
-			<Setter Property="Command" Value="{Binding MainButtonCommand}" />
 			<Setter Property="IsEnabled" Value="{Binding !IsProcessing}" />
 		</Style>
 		<Style Selector="ToggleButton">
@@ -54,240 +53,152 @@
 		<!-- Install -->
 		<StackPanel Grid.Column="0" Margin="0,0,2,0">
 			<TextBlock Text="Install" FontSize="32" Margin="0,0,0,20" />
-			<TextBlock Text="Utilities" />
-			<Button Content="Windows Terminal">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>WinTerm</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="Power Toys">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>PowerToys</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="7-Zip">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>SevenZip</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="AutoHotkey">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>AutoHotkey</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="Discord">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>Discord</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="Github Desktop">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>GitHubDesktop</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="Translucent Taskbar">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>TranslucentTaskbar</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="Etcher USB Creator">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>Etcher</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="PuTTY WinSCP">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>Putty</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="Advanced IP Scanner">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>AdvancedIpScanner</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="Everything Search">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>EverythingSearch</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="Ear Trumpet">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>EarTrumpet</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<TextBlock Text="Web Browsers" />
-			<Button Content="Brave">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>Brave</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="Firefox">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>Firefox</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="Google Chrome">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>Chrome</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<TextBlock Text="Video and Image Tools" />
-			<Button Content="ShareX">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>ShareX</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="ImageGlass">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>ImageGlass</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="GIMP">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>Gimp</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="VLC">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>Vlc</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="Media Player Classic">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>Mpc</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<TextBlock Text="Document Tools" />
-			<Button Content="VS Codium">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>VisualStudioCodium</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="VS Code">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>VisualStudioCode</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="Notepad++">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>NotepadPlusPlus</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="Adobe Reader DC">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>AdobeReader</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="Sumatra PDF">
-				<Button.CommandParameter>
-					<buttonAction:ButtonRequest>SumatraPdf</buttonAction:ButtonRequest>
-				</Button.CommandParameter>
-			</Button>
+			<ScrollViewer MaxHeight="916">
+				<StackPanel Name="InstallStackPanel" />
+			</ScrollViewer>
 		</StackPanel>
 
 		<!-- System Tweaks -->
 		<StackPanel Grid.Column="1" HorizontalAlignment="Stretch">
 			<TextBlock Text="System Tweaks" FontSize="32" Margin="0,0,0,49" />
 			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
 			        Height="62">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>EssentialTweaks</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 				<TextBlock Text="Essential Tweaks" FontSize="18" />
 			</Button>
-			<Button
-				Height="62">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Height="62">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>UndoEssentialTweaks</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 				<TextBlock Text="Undo Essential Tweaks" FontSize="18" />
 			</Button>
-			<Button Content="Disable Action Center">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="Disable Action Center">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>DisableActionCenter</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 			</Button>
-			<Button Content="Enable Action Center">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="Enable Action Center">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>EnableActionCenter</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 			</Button>
-			<Button Content="Show Tray Icons">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="Show Tray Icons">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>ShowTrayIcons</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 			</Button>
-			<Button Content="Hide Tray Icons">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="Hide Tray Icons">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>HideTrayIcons</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 			</Button>
-			<Button Content="System Dark Mode">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="System Dark Mode">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>SystemDarkMode</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 			</Button>
-			<Button Content="System Light Mode">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="System Light Mode">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>SystemLightMode</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 			</Button>
-			<Button Content="Appearance Visual FX">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="Appearance Visual FX">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>AppearanceFx</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 			</Button>
-			<Button Content="Performance Visual FX">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="Performance Visual FX">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>PerformanceFx</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 			</Button>
-			<Button Content="Disallow Background Apps">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="Disallow Background Apps">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>DisallowBackgroundApps</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 			</Button>
-			<Button Content="Allow Background Apps">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="Allow Background Apps">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>AllowBackgroundApps</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 			</Button>
-			<Button Content="Uninstall OneDrive">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="Uninstall OneDrive">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>DeleteOneDrive</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 			</Button>
-			<Button Content="Install OneDrive">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="Install OneDrive">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>EnableOneDrive</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 			</Button>
-			<Button Content="Disable Cortana">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="Disable Cortana">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>DisableCortana</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 			</Button>
-			<Button Content="Enable Cortana">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="Enable Cortana">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>EnableCortana</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 			</Button>
-			<Button Content="Enable Location Tracking">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="Enable Location Tracking">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>EnableLocationTracking</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 			</Button>
-			<Button Content="Enable Clipboard History">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="Enable Clipboard History">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>EnableClipboardHistory</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 			</Button>
-			<Button Content="Enable Hibernation">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="Enable Hibernation">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>EnableHibernation</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 			</Button>
-			<Button Content="Set Time to UTC">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="Set Time to UTC">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>SetTimeToUtc</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
@@ -296,12 +207,16 @@
 			<TextBlock FontSize="12" TextWrapping="Wrap">
 				Removing Microsoft Store Apps will break MS Store Games, Apps, Sysprep, and more.
 			</TextBlock>
-			<Button Content="Reinstall MS Store Apps">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="Reinstall MS Store Apps">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>ReinstallMsStoreApps</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
 			</Button>
-			<Button Content="Remove MS Store Apps">
+			<Button Command="{Binding MainButtonCommand}"
+			        IsEnabled="{Binding !IsProcessing}"
+			        Content="Remove MS Store Apps">
 				<Button.CommandParameter>
 					<buttonAction:ButtonRequest>RemoveMsStoreApps</buttonAction:ButtonRequest>
 				</Button.CommandParameter>
@@ -312,34 +227,46 @@
 		            HorizontalAlignment="Stretch">
 			<StackPanel Orientation="Horizontal">
 				<!-- Troubleshot -->
-				<StackPanel Grid.Column="2" HorizontalAlignment="Stretch">
+				<StackPanel HorizontalAlignment="Stretch">
 					<TextBlock Text="Troubleshoot" FontSize="32" Margin="0,0,0,49" />
-					<Button Command="{Binding MainButtonCommand}" Content="Your Phone App Fix">
+					<Button Command="{Binding MainButtonCommand}"
+					        IsEnabled="{Binding !IsProcessing}"
+					        Content="Your Phone App Fix">
 						<Button.CommandParameter>
 							<buttonAction:ButtonRequest>YourPhoneFix</buttonAction:ButtonRequest>
 						</Button.CommandParameter>
 					</Button>
-					<Button Content="Windows Update Reset">
+					<Button Command="{Binding MainButtonCommand}"
+					        IsEnabled="{Binding !IsProcessing}"
+					        Content="Windows Update Reset">
 						<Button.CommandParameter>
 							<buttonAction:ButtonRequest>WindowsUpdateReset</buttonAction:ButtonRequest>
 						</Button.CommandParameter>
 					</Button>
-					<Button Content="Network Connections">
+					<Button Command="{Binding MainButtonCommand}"
+					        IsEnabled="{Binding !IsProcessing}"
+					        Content="Network Connections">
 						<Button.CommandParameter>
 							<buttonAction:ButtonRequest>NetworkConnections</buttonAction:ButtonRequest>
 						</Button.CommandParameter>
 					</Button>
-					<Button Content="Old Control Panel">
+					<Button Command="{Binding MainButtonCommand}"
+					        IsEnabled="{Binding !IsProcessing}"
+					        Content="Old Control Panel">
 						<Button.CommandParameter>
 							<buttonAction:ButtonRequest>OldControlPanel</buttonAction:ButtonRequest>
 						</Button.CommandParameter>
 					</Button>
-					<Button Content="Old Sound Panel">
+					<Button Command="{Binding MainButtonCommand}"
+					        IsEnabled="{Binding !IsProcessing}"
+					        Content="Old Sound Panel">
 						<Button.CommandParameter>
 							<buttonAction:ButtonRequest>OldSoundPanel</buttonAction:ButtonRequest>
 						</Button.CommandParameter>
 					</Button>
-					<Button Content="Old System Panel">
+					<Button Command="{Binding MainButtonCommand}"
+					        IsEnabled="{Binding !IsProcessing}"
+					        Content="Old System Panel">
 						<Button.CommandParameter>
 							<buttonAction:ButtonRequest>OldSystemPanel</buttonAction:ButtonRequest>
 						</Button.CommandParameter>
@@ -347,17 +274,21 @@
 				</StackPanel>
 
 				<!-- Windows Update -->
-				<StackPanel Grid.Column="3">
+				<StackPanel>
 					<TextBlock Text="Windows Update" FontSize="32" Margin="0,0,0,49" />
 					<TextBlock TextWrapping="Wrap" FontSize="14">
 						It is recommended to do security updates only.&#xA;- Delays Features updates up to 3 years.&#xA;- Delays Security updates 4 days.&#xA;- Sets Maximum Active Time
 					</TextBlock>
-					<Button Command="{Binding MainButtonCommand}" Content="Default Settings">
+					<Button Command="{Binding MainButtonCommand}"
+					        IsEnabled="{Binding !IsProcessing}"
+					        Content="Default Settings">
 						<Button.CommandParameter>
 							<buttonAction:ButtonRequest>DefaultSettings</buttonAction:ButtonRequest>
 						</Button.CommandParameter>
 					</Button>
-					<Button Content="Security Updates Only">
+					<Button Command="{Binding MainButtonCommand}"
+					        IsEnabled="{Binding !IsProcessing}"
+					        Content="Security Updates Only">
 						<Button.CommandParameter>
 							<buttonAction:ButtonRequest>SecurityOnly</buttonAction:ButtonRequest>
 						</Button.CommandParameter>
