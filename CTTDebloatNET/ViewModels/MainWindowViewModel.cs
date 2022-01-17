@@ -110,8 +110,8 @@ namespace CTTDebloatNET.ViewModels {
 				ButtonRequest.OldControlPanel    => ProgramHandler.StartProgram( "control" ),
 				ButtonRequest.OldSoundPanel      => ProgramHandler.StartProgram( "mmsys.cpl" ),
 				ButtonRequest.OldSystemPanel     => Task.CompletedTask,
-				ButtonRequest.DefaultSettings    => Utilities.ToggleWindowsUpdate( false ),
-				ButtonRequest.SecurityOnly       => Utilities.ToggleWindowsUpdate( true ),
+				ButtonRequest.DefaultSettings    => Utilities.ToggleWindowsUpdateType( false ),
+				ButtonRequest.SecurityOnly       => Utilities.ToggleWindowsUpdateType( true ),
 				_                                => throw new ArgumentOutOfRangeException( nameof( request ), request, null )
 			};
 			// ReSharper restore StringLiteralTypo

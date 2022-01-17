@@ -13,7 +13,12 @@ namespace CTTDebloatNET.Models {
 	/// </summary>
 	[SuppressMessage( "Interoperability", "CA1416:Validate platform compatibility" )]
 	public static class Utilities {
-		public static Task ToggleWindowsUpdate( bool securityOnly ) {
+		/// <summary>
+		/// Toggles whether to enable Security Only updates or to receive all the updates.
+		/// </summary>
+		/// <param name="securityOnly">Whether to apply only security updates or not.</param>
+		/// <returns>A background task that is going to set Windows to the one requested.</returns>
+		public static Task ToggleWindowsUpdateType( bool securityOnly ) {
 			const string DEVICE_METADATA_LOCATION   = @"SOFTWARE\Policies\Microsoft\Windows\Device Metadata";
 			const string DRIVER_SEARCH_LOCATION     = @"SOFTWARE\Policies\Microsoft\Windows\DriverSearching";
 			const string WINDOWS_UPDATE_LOCATION    = @"SOFTWARE\Policies\Microsoft\WindowsUpdate";
