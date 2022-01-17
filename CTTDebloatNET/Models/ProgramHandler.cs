@@ -11,7 +11,6 @@ using Newtonsoft.Json;
 namespace CTTDebloatNET.Models {
 	[SuppressMessage( "Interoperability", "CA1416:Validate platform compatibility" )]
 	public static class ProgramHandler {
-
 		/// <summary>
 		/// The arguments to pass to `winget` to allow it to install the program.
 		/// </summary>
@@ -19,12 +18,24 @@ namespace CTTDebloatNET.Models {
 
 		private const string WINGET = "winget";
 
+		/// <summary>
+		/// An array that contains all of the programs that are utilities.
+		/// </summary>
 		public static ProgramInfo[] Utils { get; }
 
+		/// <summary>
+		/// An array that contains all of the programs that are web browsers.
+		/// </summary>
 		public static ProgramInfo[] Browsers { get; }
 
+		/// <summary>
+		/// An array that contains all of the programs that are Multimedia-related.
+		/// </summary>
 		public static ProgramInfo[] Multimedia { get; }
 
+		/// <summary>
+		/// An array that contains all of the programs that are used to edit/view documents.
+		/// </summary>
 		public static ProgramInfo[] DocumentTools { get; }
 
 		static ProgramHandler() {
@@ -43,6 +54,12 @@ namespace CTTDebloatNET.Models {
 			DocumentTools = programs["documents"];
 		}
 
+		/// <summary>
+		/// Installs a program asynchronously through `winget`.
+		/// </summary>
+		/// <param name="output">A method that is used to output messages to.</param>
+		/// <param name="info">The program to be installed.</param>
+		/// <exception cref="ArgumentNullException">Occurs if <paramref name="output"/> is null.</exception>
 		public static async Task InstallProgramAsync( Action<string> output, ProgramInfo info ) {
 			if ( output == null ) {
 				throw new ArgumentNullException( nameof( output ), "Expected a method to output messages to." );
@@ -50,6 +67,7 @@ namespace CTTDebloatNET.Models {
 
 			output( $"Preparing to install {info.DisplayName} onto the computer.\nInfo Data:\n{info}\n" );
 
+			// Loops through each ID to install all the programs associated with that program.
 			foreach ( var id in info.IDs ) {
 				using var wingetProc = new Process {
 					StartInfo = {
@@ -58,6 +76,7 @@ namespace CTTDebloatNET.Models {
 					}
 				};
 
+				// Meant to notify the use what program is being installed.
 				output( $"Installing `{id}` using winget." );
 
 				wingetProc.Start();
@@ -66,6 +85,7 @@ namespace CTTDebloatNET.Models {
 			}
 		}
 
+		// Easy way to just start a program without having to create it and await it in the caller's body.
 		internal static async Task StartProgram( string program, string args = "" ) {
 			using var proc = new Process {
 				StartInfo = {
@@ -82,6 +102,11 @@ namespace CTTDebloatNET.Models {
 		internal static void StopServices( params string[] serviceNames ) {
 			var services = new List<ServiceController>( ServiceController.GetServices() );
 
+			/* This is a bit of a mess, but it is also easy to follow. It simply loops through each service name, using that name,
+			 * it looks through all the services that was gathered to see if that service is the one it needs to stop.
+			 * If that service is the one to stop it will stop it and remove it from the list and return to the outer loop.
+			 * If it cannot find the service, it simply skips it.
+			 */
 			foreach ( var serviceName in serviceNames ) {
 				for ( var i = 0; i < services.Count; ++i ) {
 					var service = services[i];
@@ -102,6 +127,11 @@ namespace CTTDebloatNET.Models {
 		internal static void StartServices( params string[] serviceNames ) {
 			var services = new List<ServiceController>( ServiceController.GetServices() );
 
+			/* This is a bit of a mess, but it is also easy to follow. It simply loops through each service name, using that name,
+			 * it looks through all the services that was gathered to see if that service is the one it needs to start.
+			 * If that service is the one to start it will start it and remove it from the list and return to the outer loop.
+			 * If it cannot find the service, it simply skips it.
+			 */
 			foreach ( var serviceName in serviceNames ) {
 				for ( var i = 0; i < services.Count; ++i ) {
 					var service = services[i];
