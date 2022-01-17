@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.ServiceProcess;
+using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace CTTDebloatNET.Models {
 	[SuppressMessage( "Interoperability", "CA1416:Validate platform compatibility" )]
@@ -46,6 +49,14 @@ namespace CTTDebloatNET.Models {
 
 		private const string WINGET = "winget";
 
+		public static ProgramInfo[] Utils { get; }
+
+		public static ProgramInfo[] Browsers { get; }
+
+		public static ProgramInfo[] Multimedia { get; }
+
+		public static ProgramInfo[] DocumentTools { get; }
+
 		// This dictionary is meant as a quick way to get what each enum value means.
 		[SuppressMessage( "ReSharper", "StringLiteralTypo" )]
 		private static readonly Dictionary<Program, string> WINGET_ALIASES = new Dictionary<Program, string> {
@@ -74,6 +85,41 @@ namespace CTTDebloatNET.Models {
 			{ Program.Gimp, "GIMP.GIMP" },
 			{ Program.EarTrumpet, "File-New-Project.EarTrumpet" }
 		};
+
+		static ProgramHandler() {
+			using var resStream = Utilities.GetResourceFile( "defaults.json" );
+			using var reader    = new StreamReader( resStream, Encoding.UTF8 );
+			var       json      = reader.ReadToEnd();
+			var       programs  = JsonConvert.DeserializeObject<Dictionary<string, ProgramInfo[]>>( json );
+
+			Utils         = programs["utilities"];
+			Browsers      = programs["browsers"];
+			Multimedia    = programs["multimedia"];
+			DocumentTools = programs["documents"];
+		}
+
+		public static async Task InstallProgramAsync( Action<string> output, ProgramInfo info ) {
+			if ( output == null ) {
+				throw new ArgumentNullException( nameof( output ), "Expected a method to output messages to." );
+			}
+
+			output( $"Preparing to install {info.DisplayName} onto the computer.\nInfo Data:\n{info}\n" );
+
+			foreach ( var id in info.IDs ) {
+				using var wingetProc = new Process {
+					StartInfo = {
+						FileName  = WINGET,
+						Arguments = string.Format( WINGET_ARGS, id )
+					}
+				};
+
+				output( $"Installing `{id}` using winget." );
+
+				wingetProc.Start();
+
+				await wingetProc.WaitForExitAsync();
+			}
+		}
 
 		/// <summary>
 		/// Installs the program that is passed to it. This is mostly done through `winget`.
