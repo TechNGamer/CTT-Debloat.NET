@@ -28,14 +28,10 @@ namespace CTTDebloatNET.Views {
 
 			var ex = e;
 
-			// writer.WriteLine( "Please send this log file to the developer please, it could help.\n\n" );
-
 			while ( ex != null ) {
 				builder.Append( "Exception: " ).AppendLine( ex.GetType().FullName )
 					.Append( "Message: " ).AppendLine( ex.Message )
 					.AppendLine( "Stacktrace:" ).AppendLine( ex.StackTrace );
-
-				// writer.Flush();
 
 				ex = ex.InnerException;
 
