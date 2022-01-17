@@ -24,9 +24,6 @@ namespace CTTDebloatNET.Views {
 			);
 
 		private static string CreateErrorLog( Exception e ) {
-			// 
-			// 
-			// 
 			var builder = new StringBuilder();
 
 			var ex = e;
