@@ -77,6 +77,7 @@ namespace CTTDebloatNET.Models {
 
 					programs = JsonConvert.DeserializeObject<Dictionary<string, ProgramInfo[]>>( json );
 
+					// This section simply checks which keys are present, and add those to the list.
 					if ( programs!.ContainsKey( UTILITIES_KEY ) ) {
 						tmpUtils.AddRange( programs![UTILITIES_KEY] );
 					}
