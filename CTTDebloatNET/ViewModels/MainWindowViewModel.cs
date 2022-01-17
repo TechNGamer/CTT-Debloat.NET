@@ -4,47 +4,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using CTTDebloatNET.Models;
-using CTTDebloatNET.Views;
 using ReactiveUI;
 
 // ReSharper disable once IdentifierTypo
 namespace CTTDebloatNET.ViewModels {
 	public enum ButtonRequest : ushort {
-		// Utilities
-		WinTerm   = 0,
-		PowerToys = 1,
-		SevenZip  = 2,
-		AutoHotkey,
-		Discord,
-		GitHubDesktop,
-		TranslucentTaskbar,
-		Etcher,
-		Putty,
-		AdvancedIpScanner,
-		EverythingSearch,
-		EarTrumpet,
-
-		// Web Browsers
-		Brave,
-		Firefox,
-		Chrome,
-
-		// Multimedia
-		ShareX,
-		ImageGlass,
-		Gimp,
-		Vlc,
-		Mpc,
-
-		// Text editors
-		VisualStudioCodium,
-		VisualStudioCode,
-		NotepadPlusPlus,
-		AdobeReader,
-		SumatraPdf,
-
 		// System Tweaks
-		EssentialTweaks,
+		EssentialTweaks = 0,
 		UndoEssentialTweaks,
 		DisableActionCenter,
 		EnableActionCenter,
@@ -101,9 +67,17 @@ namespace CTTDebloatNET.ViewModels {
 			InstallProgram    = ReactiveCommand.CreateFromTask( ( Func<ProgramInfo, Task> )InstallProgramHandler );
 		}
 
-		private Task InstallProgramHandler( ProgramInfo info ) => ProgramHandler.InstallProgramAsync( WriteOutput, info );
+		private async Task InstallProgramHandler( ProgramInfo info ) {
+			IsProcessing = true;
+			
+			await ProgramHandler.InstallProgramAsync( WriteOutput, info );
+
+			IsProcessing = false;
+		}
 
 		private async Task ProcessButtonRequestHandler( ButtonRequest request ) {
+			IsProcessing = true;
+			
 			WriteOutput( "Beginning the request, depending on the request, this might take a while." );
 
 			try {
@@ -111,18 +85,18 @@ namespace CTTDebloatNET.ViewModels {
 			} catch ( Exception ) {
 				WriteOutput( "The request finished with an error." );
 
+				IsProcessing = false;
+
 				throw;
 			}
 
 			WriteOutput( "The request is finished." );
+
+			IsProcessing = false;
 		}
 
 		[SuppressMessage( "ReSharper", "ConvertIfStatementToSwitchExpression" )]
 		private Task ProcessRequest( ButtonRequest request ) {
-			if ( request <= ButtonRequest.SumatraPdf ) {
-				return ProgramInstallHandler( request );
-			}
-
 			if ( request <= ButtonRequest.RemoveMsStoreApps ) {
 				return TweakHandler( request );
 			}
@@ -173,49 +147,6 @@ namespace CTTDebloatNET.ViewModels {
 				ButtonRequest.EnableHibernation      => Task.Run( Tweaks.EnableHibernation ),
 				_                                    => throw new ArgumentOutOfRangeException( nameof( request ), "Expected a tweak request." ),
 			};
-		}
-
-		private Task ProgramInstallHandler( ButtonRequest request ) {
-			// This method only handles programs.
-			// ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
-			return request switch {
-				ButtonRequest.WinTerm            => InstallProgram( ProgramHandler.Program.WindowsTerminal ),
-				ButtonRequest.PowerToys          => InstallProgram( ProgramHandler.Program.PowerToys ),
-				ButtonRequest.SevenZip           => InstallProgram( ProgramHandler.Program.SevenZip ),
-				ButtonRequest.AutoHotkey         => InstallProgram( ProgramHandler.Program.AutoHotkey ),
-				ButtonRequest.Discord            => InstallProgram( ProgramHandler.Program.Discord ),
-				ButtonRequest.GitHubDesktop      => InstallProgram( ProgramHandler.Program.GithubDesktop ),
-				ButtonRequest.TranslucentTaskbar => InstallProgram( ProgramHandler.Program.TranslucentTaskbar ),
-				ButtonRequest.Etcher             => InstallProgram( ProgramHandler.Program.Etcher ),
-				ButtonRequest.Putty              => InstallProgram( ProgramHandler.Program.Putty ),
-				ButtonRequest.AdvancedIpScanner  => InstallProgram( ProgramHandler.Program.AdvancedIpScanner ),
-				ButtonRequest.EverythingSearch   => InstallProgram( ProgramHandler.Program.EverythingSearch ),
-				ButtonRequest.Brave              => InstallProgram( ProgramHandler.Program.Brave ),
-				ButtonRequest.Firefox            => InstallProgram( ProgramHandler.Program.Firefox ),
-				ButtonRequest.Chrome             => InstallProgram( ProgramHandler.Program.Chrome ),
-				ButtonRequest.ShareX             => InstallProgram( ProgramHandler.Program.ShareX ),
-				ButtonRequest.ImageGlass         => InstallProgram( ProgramHandler.Program.ImageGlass ),
-				ButtonRequest.Gimp               => InstallProgram( ProgramHandler.Program.Gimp ),
-				ButtonRequest.Vlc                => InstallProgram( ProgramHandler.Program.Vlc ),
-				ButtonRequest.Mpc                => InstallProgram( ProgramHandler.Program.MediaPlayerClassic ),
-				ButtonRequest.VisualStudioCodium => InstallProgram( ProgramHandler.Program.VisualStudioCodium ),
-				ButtonRequest.VisualStudioCode   => InstallProgram( ProgramHandler.Program.VisualStudioCode ),
-				ButtonRequest.NotepadPlusPlus    => InstallProgram( ProgramHandler.Program.NotepadPlusPlus ),
-				ButtonRequest.AdobeReader        => InstallProgram( ProgramHandler.Program.AdobeReader ),
-				ButtonRequest.SumatraPdf         => InstallProgram( ProgramHandler.Program.SumatraPdf ),
-				ButtonRequest.EarTrumpet         => InstallProgram( ProgramHandler.Program.EarTrumpet ),
-				_                                => throw new ArgumentOutOfRangeException( nameof( request ), "Expected a program request." )
-			};
-
-			async Task InstallProgram( ProgramHandler.Program program ) {
-				IsProcessing = true;
-
-				try {
-					await ProgramHandler.InstallProgramAsync( WriteOutput, program );
-				} finally {
-					IsProcessing = false;
-				}
-			}
 		}
 
 		private void WriteOutput( string message ) {
