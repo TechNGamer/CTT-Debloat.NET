@@ -118,6 +118,11 @@ namespace CTTDebloatNET.Models {
 			return resourceStream;
 		}
 
+		/// <summary>
+		/// Writes out an embedded file to an actual temp file.
+		/// </summary>
+		/// <param name="file">The file to pull that is embedded.</param>
+		/// <returns>A string to the path of where that file was written to.</returns>
 		internal static async Task<string> WriteResourceToFile( string file ) {
 			var             resourceStream = GetResourceFile( file );
 			var             tmpFile        = Path.Combine( Path.GetTempPath(), file );
@@ -128,13 +133,23 @@ namespace CTTDebloatNET.Models {
 			return tmpFile;
 		}
 
+		/// <summary>
+		/// Write out an embedded file to an actual temp file, but returns the FileStream.
+		/// </summary>
+		/// <param name="file">The file to extract.</param>
+		/// <returns>The file stream that is looking at the file.</returns>
 		internal static async Task<FileStream> WriteResourceToFileStream( string file ) {
-			var       tmpFileLoc = await WriteResourceToFile( file );
-			await using var fStream    = new FileStream( tmpFileLoc, FileMode.Open, FileAccess.ReadWrite, FileShare.Read );
+			var tmpFileLoc = await WriteResourceToFile( file );
+			var fStream    = new FileStream( tmpFileLoc, FileMode.Open, FileAccess.ReadWrite, FileShare.Read );
 
 			return fStream;
 		}
 
+		/// <summary>
+		/// Helps to download a file off the internet.
+		/// </summary>
+		/// <param name="url">The url to the file to download.</param>
+		/// <returns>A string to the file in the temp directory.</returns>
 		[SuppressMessage( "ReSharper", "StringLiteralTypo" )]
 		internal static async Task<string> DownloadFile( string url ) {
 			var httpClientHandle = new HttpClientHandler() {
