@@ -89,6 +89,7 @@ namespace CTTDebloatNET.ViewModels {
 		public string LogOutput => outputBuilder.ToString();
 
 		public ICommand MainButtonCommand { get; }
+		public ICommand InstallProgram    { get; }
 
 		private bool isProcessing;
 
@@ -97,7 +98,10 @@ namespace CTTDebloatNET.ViewModels {
 		public MainWindowViewModel() {
 			outputBuilder     = new StringBuilder();
 			MainButtonCommand = ReactiveCommand.CreateFromTask( ( Func<ButtonRequest, Task> )ProcessButtonRequestHandler );
+			InstallProgram    = ReactiveCommand.CreateFromTask( ( Func<ProgramInfo, Task> )InstallProgramHandler );
 		}
+
+		private Task InstallProgramHandler( ProgramInfo info ) => ProgramHandler.InstallProgramAsync( WriteOutput, info );
 
 		private async Task ProcessButtonRequestHandler( ButtonRequest request ) {
 			WriteOutput( "Beginning the request, depending on the request, this might take a while." );
