@@ -3,9 +3,18 @@ using System.Text;
 using Newtonsoft.Json;
 
 namespace CTTDebloatNET.Models {
+	/// <summary>
+	/// Represents a program that can be installed.
+	/// </summary>
 	public readonly struct ProgramInfo {
+		/// <summary>
+		/// The display name of the program.
+		/// </summary>
 		public string DisplayName { get; }
 
+		/// <summary>
+		/// The IDs required to install the program.
+		/// </summary>
 		public string[] IDs { get; }
 
 		[JsonConstructor]
