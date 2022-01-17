@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace CTTDebloatNET.Models {
+	/// <summary>
+	/// This class handles pretty much anything that has to deal with programs.
+	/// </summary>
 	[SuppressMessage( "Interoperability", "CA1416:Validate platform compatibility" )]
 	public static class ProgramHandler {
 		/// <summary>
@@ -39,19 +42,59 @@ namespace CTTDebloatNET.Models {
 		public static ProgramInfo[] DocumentTools { get; }
 
 		static ProgramHandler() {
-			using var resStream = Utilities.GetResourceFile( "defaults.json" );
-			using var reader    = new StreamReader( resStream, Encoding.UTF8 );
-			var       json      = reader.ReadToEnd();
-			var       programs  = JsonConvert.DeserializeObject<Dictionary<string, ProgramInfo[]>>( json );
+			const string UTILITIES_KEY  = "utilities";
+			const string BROWSERS_KEY   = "browsers";
+			const string MULTIMEDIA_KEY = "multimedia";
+			const string DOCUMENTS_KEY  = "documents";
+			using var    resStream      = Utilities.GetResourceFile( "defaults.json" );
+			using var    reader         = new StreamReader( resStream, Encoding.UTF8 );
+			var          json           = reader.ReadToEnd();
+			var          programs       = JsonConvert.DeserializeObject<Dictionary<string, ProgramInfo[]>>( json );
 
 			if ( programs == null ) {
 				throw new NullReferenceException( "Expected programs to not be null." );
 			}
 
-			Utils         = programs["utilities"];
-			Browsers      = programs["browsers"];
-			Multimedia    = programs["multimedia"];
-			DocumentTools = programs["documents"];
+			/* This if has to branches to go down, as you can see. It checks to see if a file called `expand.json` exists within
+			 * the same directory it is in. If such a file exists, it attempt to parse that JSON and add those programs to the
+			 * proper program list. If it fails at any of those steps, it aborts to commiting what data is in the list to the arrays.
+			 * If there is no JSON with that name, it will just default to making the properties reference those arrays.
+			 *
+			 * It has to be done like this since those properties only have getters, which means only the constructor can set them.
+			 * And since this is a static class, it has to be done in the static constructor.
+			 */
+			if ( File.Exists( "expand.json" ) ) {
+				var tmpUtils    = new List<ProgramInfo>( programs[UTILITIES_KEY] );
+				var tmpBrowsers = new List<ProgramInfo>( programs[BROWSERS_KEY] );
+				var tmpMult     = new List<ProgramInfo>( programs[MULTIMEDIA_KEY] );
+				var tmpDoc      = new List<ProgramInfo>( programs[DOCUMENTS_KEY] );
+
+				try {
+					using var fStream  = new FileStream( "expand.json", FileMode.Open, FileAccess.Read, FileShare.Read );
+					using var myReader = new StreamReader( fStream );
+
+					json = myReader.ReadToEnd();
+
+					programs = JsonConvert.DeserializeObject<Dictionary<string, ProgramInfo[]>>( json );
+
+					tmpUtils.AddRange( programs![UTILITIES_KEY] );
+					tmpBrowsers.AddRange( programs![BROWSERS_KEY] );
+					tmpMult.AddRange( programs![MULTIMEDIA_KEY] );
+					tmpDoc.AddRange( programs![DOCUMENTS_KEY] );
+				} catch ( Exception ) {
+					// We'll just ignore the exception.
+				}
+
+				Utils         = tmpUtils.ToArray();
+				Browsers      = tmpBrowsers.ToArray();
+				Multimedia    = tmpMult.ToArray();
+				DocumentTools = tmpDoc.ToArray();
+			} else {
+				Utils         = programs[UTILITIES_KEY];
+				Browsers      = programs[BROWSERS_KEY];
+				Multimedia    = programs[MULTIMEDIA_KEY];
+				DocumentTools = programs[DOCUMENTS_KEY];
+			}
 		}
 
 		/// <summary>
