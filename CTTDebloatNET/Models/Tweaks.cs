@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using Microsoft.Win32;
 
 namespace CTTDebloatNET.Models {
+	/// <summary>
+	/// This class tweaks windows in either massive ways or little ways.
+	/// </summary>
 	[SuppressMessage( "Interoperability", "CA1416:Validate platform compatibility" )]
 	public static class Tweaks {
 		// This is to help keep the registry all cleaned up.
@@ -936,6 +939,10 @@ namespace CTTDebloatNET.Models {
 		}
 		#endregion
 
+		/// <summary>
+		/// Toggles the enabling or disabling of the action center.
+		/// </summary>
+		/// <param name="enable">Whether to enable it or disable it.</param>
 		public static void ToggleActionCenter( bool enable ) {
 			const string PUSH_LOCATION = @"SOFTWARE\Microsoft\Windows\CurrentVersion\PushNotifications";
 
@@ -943,6 +950,11 @@ namespace CTTDebloatNET.Models {
 			Utilities.ChangeDWordRegistryKey( Registry.CurrentUser, PUSH_LOCATION, "ToastEnabled", enable ? 1u : 0u );
 		}
 
+		/// <summary>
+		/// Used to select either the performance visuals or the fancy visuals.
+		/// </summary>
+		/// <param name="usePerformance">To use the performance over the fancy visual.</param>
+		/// <returns>A background task that will change the visuals.</returns>
 		public static Task ToggleVisualEffects( bool usePerformance ) {
 			const string DESKTOP                = @"Control Panel\Desktop";
 			const string WINDOW_METRIC          = @"Control Panel\Desktop\WindowMetric";
@@ -995,6 +1007,11 @@ namespace CTTDebloatNET.Models {
 			}
 		}
 
+		/// <summary>
+		/// Will either remove or install OneDrive to the computer.
+		/// </summary>
+		/// <param name="enabled">Whether to install or remove OneDrive.</param>
+		/// <returns>A background task that will either remove or add OneDrive.</returns>
 		[SuppressMessage( "ReSharper", "IdentifierTypo" )]
 		[SuppressMessage( "ReSharper", "StringLiteralTypo" )]
 		public static Task ToggleOneDrive( bool enabled ) {
@@ -1066,6 +1083,10 @@ namespace CTTDebloatNET.Models {
 			}
 		}
 
+		/// <summary>
+		/// Used to switch between Dark Mode or Light Mode.
+		/// </summary>
+		/// <param name="darkTheme">Whether to use Dark Mode or Light Mode.</param>
 		public static void ToggleThemeMode( bool darkTheme ) {
 			const string THEME_REG_LOCATION = @"SOFTWARE\Microsoft\CurrentVersion\Themes\Personalize";
 			const string KEY                = "AppsUseLightTheme";
@@ -1077,12 +1098,19 @@ namespace CTTDebloatNET.Models {
 			}
 		}
 
+		/// <summary>
+		/// Used to either show all tray icons or none at all.
+		/// </summary>
+		/// <param name="hide">Whether to show or hide tray icons.</param>
 		public static void ToggleTrayIcons( bool hide ) {
 			const string TRAY_KEY = "EnableAutoTray";
 
 			Utilities.ChangeDWordRegistryKey( Registry.CurrentUser, HKCU_EXPLORER_LOCATION, TRAY_KEY, hide ? 1u : 0u );
 		}
 
+		/// <summary>
+		/// Used to enable Clipboard History.
+		/// </summary>
 		public static void EnableClipboardHistory() {
 			using var msClipboard     = Registry.CurrentUser.CreateSubKey( @"SOFTWARE\Microsfot\Clipboard" );
 			using var systemClipboard = Registry.LocalMachine.CreateSubKey( @"SOFTWARE\Policies\Microsoft\Windows\System" );
@@ -1091,6 +1119,9 @@ namespace CTTDebloatNET.Models {
 			systemClipboard?.DeleteValue( "AllowClipboardHistory" );
 		}
 
+		/// <summary>
+		/// Used to re-enable location tracking.
+		/// </summary>
 		[SuppressMessage( "ReSharper", "IdentifierTypo" )]
 		[SuppressMessage( "ReSharper", "CommentTypo" )]
 		public static void EnableLocation() {
@@ -1125,12 +1156,13 @@ namespace CTTDebloatNET.Models {
 			Utilities.ChangeDWordRegistryKey( Registry.LocalMachine, HKLM_LOCATION_TRACKING_LOCATIONS[2], "Status", 1 );
 		}
 
+		/// <summary>
+		/// Used to re-enable hibernation.
+		/// </summary>
 		public static void EnableHibernation() {
 			Utilities.ChangeDWordRegistryKey( Registry.LocalMachine, HKLM_HIBERNATION_LOCATIONS[0], "HibernateEnabled", 1 );
 			Utilities.ChangeDWordRegistryKey( Registry.LocalMachine, HKLM_HIBERNATION_LOCATIONS[1], "ShowHibernateOption", 1 );
 		}
-
-		// public static void DisableNumLock() => Utilities.ChangeDWordRegistryKey( Registry.Users, HKU_KEYBOARD, INIT_KEYBOARD_KEY, 0 );
 
 		// Wrapper method that calls another program to manage tasks.
 		private static Task DisableSchedule( string name ) => ProgramHandler.StartProgram( "schtasks", $"change /tn \"{name}\" /DISABLE" );

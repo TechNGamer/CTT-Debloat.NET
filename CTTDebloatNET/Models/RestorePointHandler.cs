@@ -64,6 +64,11 @@ namespace CTTDebloatNET.Models {
 			ModifiedSettings = 0xc
 		}
 
+		/// <summary>
+		/// Create a system restore point.
+		/// </summary>
+		/// <param name="description">The description to use on the restore point.</param>
+		/// <exception cref="PlatformNotSupportedException">If the platform is not Windows.</exception>
 		[SuppressMessage( "Interoperability", "CA1416:Validate platform compatibility" )]
 		public static void CreateSystemRestorePoint( string description ) {
 			if ( !RuntimeInformation.IsOSPlatform( OSPlatform.Windows ) ) {

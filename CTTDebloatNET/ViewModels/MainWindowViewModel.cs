@@ -8,6 +8,10 @@ using ReactiveUI;
 
 // ReSharper disable once IdentifierTypo
 namespace CTTDebloatNET.ViewModels {
+	/// <summary>
+	/// What the buttons are requesting to be done.
+	/// </summary>
+	/* Did it this way to prevent having a bunch of method that are just going to end up doing pretty much the same thing. */
 	public enum ButtonRequest : ushort {
 		// System Tweaks
 		EssentialTweaks = 0,
@@ -46,16 +50,32 @@ namespace CTTDebloatNET.ViewModels {
 		SecurityOnly
 	}
 
+	/// <summary>
+	/// The main window's ViewModel.
+	/// </summary>
 	public class MainWindowViewModel : ViewModelBase {
+		/// <summary>
+		/// If the ViewModel is processing data or not.
+		/// </summary>
 		public bool IsProcessing {
 			get => isProcessing;
 			private set => this.RaiseAndSetIfChanged( ref isProcessing, value );
 		}
 
+		/// <summary>
+		/// A string of everything that has been outputted during it's operations.
+		/// </summary>
 		public string LogOutput => outputBuilder.ToString();
 
+		/// <summary>
+		/// The command that most buttons will call upon.
+		/// </summary>
 		public ICommand MainButtonCommand { get; }
-		public ICommand InstallProgram    { get; }
+
+		/// <summary>
+		/// A special command that only install buttons should use.
+		/// </summary>
+		public ICommand InstallProgram { get; }
 
 		private bool isProcessing;
 
@@ -67,17 +87,19 @@ namespace CTTDebloatNET.ViewModels {
 			InstallProgram    = ReactiveCommand.CreateFromTask( ( Func<ProgramInfo, Task> )InstallProgramHandler );
 		}
 
+		// This method simply set's the `IsProcessing` flag and calls the `InstallProgramAsync` method.
 		private async Task InstallProgramHandler( ProgramInfo info ) {
 			IsProcessing = true;
-			
+
 			await ProgramHandler.InstallProgramAsync( WriteOutput, info );
 
 			IsProcessing = false;
 		}
 
+		// This method is the initial kickoff, and does some basic things before and after.
 		private async Task ProcessButtonRequestHandler( ButtonRequest request ) {
 			IsProcessing = true;
-			
+
 			WriteOutput( "Beginning the request, depending on the request, this might take a while." );
 
 			try {
@@ -95,6 +117,8 @@ namespace CTTDebloatNET.ViewModels {
 			IsProcessing = false;
 		}
 
+		/* This method is a lot more complex, and has been split into multiple methods for easier readability. Though been simplified since
+		 * the program install has been changed to do things differently. */
 		[SuppressMessage( "ReSharper", "ConvertIfStatementToSwitchExpression" )]
 		private Task ProcessRequest( ButtonRequest request ) {
 			if ( request <= ButtonRequest.RemoveMsStoreApps ) {
@@ -147,8 +171,8 @@ namespace CTTDebloatNET.ViewModels {
 				ButtonRequest.EnableHibernation      => Task.Run( Tweaks.EnableHibernation ),
 				_                                    => throw new ArgumentOutOfRangeException( nameof( request ), "Expected a tweak request." ),
 			};
-		}
 
+		// Basic method to write data to the output TextBlock.
 		private void WriteOutput( string message ) {
 			outputBuilder.AppendLine( message );
 

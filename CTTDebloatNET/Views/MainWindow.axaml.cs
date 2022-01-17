@@ -18,7 +18,11 @@ using MessageBox.Avalonia.Enums;
 using ReactiveUI;
 
 namespace CTTDebloatNET.Views {
+	/// <summary>
+	/// The main window of the application.
+	/// </summary>
 	public partial class MainWindow : ReactiveWindow<MainWindowViewModel> {
+		// This method is because I found myself typing the same thing over and over, which means it needs to be a method.
 		private static IMsBoxWindow<ButtonResult> CreateErrorDialog( string title, string message, ButtonEnum options = ButtonEnum.YesNoAbort ) =>
 			MessageBoxManager.GetMessageBoxStandardWindow(
 				title,
@@ -27,11 +31,13 @@ namespace CTTDebloatNET.Views {
 				MessageBox.Avalonia.Enums.Icon.Error
 			);
 
+		// Simply creates an error message that expands out an exception if there are inner exceptions to also log.
 		private static string CreateErrorLog( Exception e ) {
 			var builder = new StringBuilder();
 
 			var ex = e;
 
+			// Doing this to not use recursion and prevent a StackOverflowException.
 			while ( ex != null ) {
 				builder.Append( "Exception: " ).AppendLine( ex.GetType().FullName )
 					.Append( "Message: " ).AppendLine( ex.Message )
@@ -49,6 +55,7 @@ namespace CTTDebloatNET.Views {
 			return builder.ToString();
 		}
 
+		// As the same suggests, it write any string out to a file.
 		private static void WriteErrorToFile( string errorStr, Type errType ) {
 			var       filePath = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.DesktopDirectory ), $"{DateTimeOffset.Now:yy-MM-dd_hh-mm-ss}-{errType.FullName}.log" );
 			using var fStream  = new FileStream( filePath, FileMode.Create, FileAccess.Write, FileShare.Read );
@@ -59,6 +66,7 @@ namespace CTTDebloatNET.Views {
 		}
 
 		public MainWindow() {
+			// Used to catch the ViewModel and add buttons that make calls to said ViewModel. It's somehow tricky.
 			Task.Run( async () => {
 				await Dispatcher.UIThread.InvokeAsync( async () => {
 					while ( true ) {
@@ -74,11 +82,13 @@ namespace CTTDebloatNET.Views {
 				await Dispatcher.UIThread.InvokeAsync( AddInstallButtons );
 			} );
 			
+			// Initializing Avalonia, and the Dev Tools if in debug.
 			InitializeComponent();
 			#if DEBUG
 			this.AttachDevTools();
 			#endif
 
+			// Redirects the exception handler instead of crashing the program.
 			RxApp.DefaultExceptionHandler = Observer.Create<Exception>( ShowErrorDialogAsync );
 		}
 
@@ -109,6 +119,7 @@ namespace CTTDebloatNET.Views {
 
 			AddProgramsToList( ProgramHandler.DocumentTools );
 
+			// Each section above does the same thing, so that means it should be a method to reduce the amount of typing.
 			void AddProgramsToList( IEnumerable<ProgramInfo> programs ) {
 				foreach ( var info in programs ) {
 					installPanel.Children.Add( new Button {
@@ -120,8 +131,9 @@ namespace CTTDebloatNET.Views {
 			}
 		}
 
+		// This method is to show an error dialog and asks how the user wishes to proceed.
 		private async void ShowErrorDialogAsync( Exception ex ) {
-			var errorDialog = CreateErrorDialog( "An exception occoured.", "Something happened, but the program seems stable at the moment. Would you like more details?" );
+			var errorDialog = CreateErrorDialog( "An exception occurred.", "Something happened, but the program seems stable at the moment. Would you like more details?" );
 			var answer      = await errorDialog.ShowDialog( this );
 
 			// That is the job of default JetBrains!
