@@ -155,53 +155,50 @@ namespace CTTDebloatNET.Models {
 		}
 
 		internal static void StopServices( params string[] serviceNames ) {
-			var services = new List<ServiceController>( ServiceController.GetServices() );
+			foreach ( var service in GetServiceControllersByNames( serviceNames ) ) {
+				service.Stop( true );
+			}
+		}
 
-			/* This is a bit of a mess, but it is also easy to follow. It simply loops through each service name, using that name,
-			 * it looks through all the services that was gathered to see if that service is the one it needs to stop.
-			 * If that service is the one to stop it will stop it and remove it from the list and return to the outer loop.
-			 * If it cannot find the service, it simply skips it.
-			 */
-			foreach ( var serviceName in serviceNames ) {
-				for ( var i = 0; i < services.Count; ++i ) {
-					var service = services[i];
+		internal static void StartServices( params string[] serviceNames ) {
+			foreach ( var service in GetServiceControllersByNames( serviceNames ) ) {
+				service.Start();
+			}
+		}
 
-					if ( !service.ServiceName.Equals( serviceName, StringComparison.OrdinalIgnoreCase ) ) {
+		internal static ServiceStartMode ServiceStartType( string serviceName ) {
+			var service = GetServiceControllerByName( serviceName );
+
+			return service.StartType;
+		}
+
+		// This method is an IEnumerable to make it easier to just return the ServiceController rather than collecting it then returning.
+		private static IEnumerable<ServiceController> GetServiceControllersByNames( IEnumerable<string> names ) {
+			var nameList    = new List<string>( names );
+
+			foreach ( var service in ServiceController.GetServices() ) {
+				for ( var i = 0; i < nameList.Count; ++i ) {
+					if ( !service.ServiceName.Equals( nameList[i], StringComparison.OrdinalIgnoreCase ) ) {
 						continue;
 					}
 
-					service.Stop( true );
+					yield return service;
 
-					services.RemoveAt( i );
-
+					nameList.RemoveAt( i );
+						
 					break;
 				}
 			}
 		}
 
-		internal static void StartServices( params string[] serviceNames ) {
-			var services = new List<ServiceController>( ServiceController.GetServices() );
-
-			/* This is a bit of a mess, but it is also easy to follow. It simply loops through each service name, using that name,
-			 * it looks through all the services that was gathered to see if that service is the one it needs to start.
-			 * If that service is the one to start it will start it and remove it from the list and return to the outer loop.
-			 * If it cannot find the service, it simply skips it.
-			 */
-			foreach ( var serviceName in serviceNames ) {
-				for ( var i = 0; i < services.Count; ++i ) {
-					var service = services[i];
-
-					if ( !service.ServiceName.Equals( serviceName, StringComparison.OrdinalIgnoreCase ) ) {
-						continue;
-					}
-
-					service.Start();
-
-					services.RemoveAt( i );
-
-					break;
+		private static ServiceController GetServiceControllerByName( string name ) {
+			foreach ( var service in ServiceController.GetServices() ) {
+				if ( service.ServiceName.Equals( name, StringComparison.OrdinalIgnoreCase ) ) {
+					return service;
 				}
 			}
+
+			return null;
 		}
 	}
 }
