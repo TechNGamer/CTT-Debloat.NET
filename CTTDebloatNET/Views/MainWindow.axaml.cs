@@ -66,22 +66,6 @@ namespace CTTDebloatNET.Views {
 		}
 
 		public MainWindow() {
-			// Used to catch the ViewModel and add buttons that make calls to said ViewModel. It's somehow tricky.
-			Task.Run( async () => {
-				await Dispatcher.UIThread.InvokeAsync( async () => {
-					while ( true ) {
-						if ( ViewModel == null ) {
-							Debug.WriteLine( "Still waiting for the ViewModel." );
-						
-							await Task.Delay( 10 );
-						} else {
-							break;
-						}
-					}
-				} );
-				await Dispatcher.UIThread.InvokeAsync( AddInstallButtons );
-			} );
-			
 			// Initializing Avalonia, and the Dev Tools if in debug.
 			InitializeComponent();
 			#if DEBUG
@@ -90,45 +74,6 @@ namespace CTTDebloatNET.Views {
 
 			// Redirects the exception handler instead of crashing the program.
 			RxApp.DefaultExceptionHandler = Observer.Create<Exception>( ShowErrorDialogAsync );
-		}
-
-		private void AddInstallButtons() {
-			var installPanel = this.FindControl<StackPanel>( "InstallStackPanel" );
-			
-			installPanel.Children.Add( new TextBlock() {
-				Text = "Utilities"
-			} );
-
-			AddProgramsToList( ProgramHandler.Utils );
-
-			installPanel.Children.Add( new TextBlock {
-				Text = "Browsers"
-			} );
-
-			AddProgramsToList( ProgramHandler.Browsers );
-
-			installPanel.Children.Add( new TextBlock {
-				Text = "Multimedia"
-			} );
-
-			AddProgramsToList( ProgramHandler.Multimedia );
-
-			installPanel.Children.Add( new TextBlock {
-				Text = "Document Tools"
-			} );
-
-			AddProgramsToList( ProgramHandler.DocumentTools );
-
-			// Each section above does the same thing, so that means it should be a method to reduce the amount of typing.
-			void AddProgramsToList( IEnumerable<ProgramInfo> programs ) {
-				foreach ( var info in programs ) {
-					installPanel.Children.Add( new Button {
-						Command          = ViewModel!.InstallProgram,
-						CommandParameter = info,
-						Content          = info.DisplayName,
-					} );
-				}
-			}
 		}
 
 		// This method is to show an error dialog and asks how the user wishes to proceed.

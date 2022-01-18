@@ -67,9 +67,27 @@
 			<!-- Install -->
 			<StackPanel Grid.Column="0" Margin="0,0,2,0">
 				<TextBlock Text="Install" FontSize="32" Margin="0,0,0,20" />
-				<ScrollViewer MaxHeight="916">
-					<StackPanel Name="InstallStackPanel" />
-				</ScrollViewer>
+				<Button Content="Install Selected" Command="{Binding InstallProgram}" />
+				<TextBlock Text="Utilities" />
+				<ListBox MaxHeight="175" SelectionMode="{Binding ProgramListSelectionMode}"
+				         Items="{Binding UtilPrograms}"
+				         SelectedItems="{Binding UtilProgramsSelected}"
+				         IsEnabled="{Binding !IsProcessing}" />
+				<TextBlock Text="Web Browsers" />
+				<ListBox MaxHeight="225" SelectionMode="{Binding ProgramListSelectionMode}"
+				         Items="{Binding BrowserPrograms}"
+				         SelectedItems="{Binding BrowserProgramsSelected}"
+				         IsEnabled="{Binding !IsProcessing}" />
+				<TextBlock Text="Image and Video Tools" />
+				<ListBox MaxHeight="225" SelectionMode="{Binding ProgramListSelectionMode}"
+				         Items="{Binding MultiPrograms}"
+				         SelectedItems="{Binding MultiProgramsSelected}"
+				         IsEnabled="{Binding !IsProcessing}" />
+				<TextBlock Text="Document Editors/Viewer" />
+				<ListBox MaxHeight="225" SelectionMode="{Binding ProgramListSelectionMode}"
+				         Items="{Binding DocPrograms}"
+				         SelectedItems="{Binding DocProgramsSelected}"
+				         IsEnabled="{Binding !IsProcessing}" />
 			</StackPanel>
 
 			<!-- System Tweaks -->
