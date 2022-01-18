@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Security.AccessControl;
 using System.Threading.Tasks;
@@ -67,6 +68,24 @@ namespace CTTDebloatNET.Models {
 				auUpdate?.DeleteValue( NO_AUTO_REBOOT_KEY );
 				auUpdate?.DeleteValue( POWER_MANAGEMENT );
 			}
+		}
+
+		internal static uint? GetDWordFromRegistry( RegistryKey regKey, string location, string key ) {
+			using var subKey = regKey.OpenSubKey( location );
+
+			if ( subKey == null ) {
+				return null;
+			}
+
+			if ( !subKey.GetValueNames().Contains( key ) ) {
+				return null;
+			}
+
+			if ( subKey.GetValueKind( key ) != RegistryValueKind.DWord ) {
+				return null;
+			}
+
+			return subKey.GetValue( key ) as uint?;
 		}
 
 		/// <summary>
