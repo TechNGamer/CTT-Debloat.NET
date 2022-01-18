@@ -338,65 +338,61 @@ namespace CTTDebloatNET.Models {
 				throw new ArgumentNullException( nameof( output ), "Expected a method to report back to." );
 			}
 
+			// Creates a Restory Point.
 			output( "Creating a restore point." );
 
 			await Task.Run( () => RestorePointHandler.CreateSystemRestorePoint( "Essential Tweaks" ) );
 
-			#region Shut Up Windows
+			// O&O Shutup
 			output( "Running O&O Shut Up 10." );
 
 			await ShutUpWindows();
-			#endregion
 
-			#region Telemetry
-			output( "Disabling Telemetry." );
+			// Telemetry
+			output( $"Disabling Telemetry.\nChanging `HKLM:\\{HKLM_TELEMETRY_LOCATIONS[0]}` and `HKLM:\\{HKLM_TELEMETRY_LOCATIONS[1]}` `AllowTelemetry` to 0" );
 
 			Utilities.ChangeDWordRegistryKey( Registry.LocalMachine, HKLM_TELEMETRY_LOCATIONS[0], TELEMETRY_KEY );
 			Utilities.ChangeDWordRegistryKey( Registry.LocalMachine, HKLM_TELEMETRY_LOCATIONS[1], TELEMETRY_KEY );
 
 			foreach ( var task in TELEMETRY_TASKS ) {
+				output( $"Disabling Telemetry task `{task}`." );
+				
 				await DisableSchedule( task );
 			}
-			#endregion
 
-			#region WiFi Sense
+			// WiFi Sense
 			output( "Disabling Wi-Fi Sense" );
 
 			Utilities.ChangeDWordRegistryKey( Registry.LocalMachine, HKLM_HOTSPOT_LOCATION, "Value" );
 			Utilities.ChangeDWordRegistryKey( Registry.LocalMachine, HKLM_AUTO_CONNECT_LOCATION, "Value" );
-			#endregion
 
-			#region Application Suggestions
+			// Application Suggestions
 			output( "Disabling Application Suggestions" );
 
 			foreach ( var regKey in CLOUD_CONTENT_KEYS ) {
-				Utilities.ChangeDWordRegistryKey( Registry.CurrentUser, HKCU_CONTENT_DELIVERY_MANAGER_LOCATION, regKey, 1 );
+				Utilities.ChangeDWordRegistryKey( Registry.CurrentUser, HKCU_CONTENT_DELIVERY_MANAGER_LOCATION, regKey );
 			}
 
 			Utilities.ChangeDWordRegistryKey( Registry.LocalMachine, HKLM_CLOUD_CONTENT_POLICY_LOCATION, "DisableWindowsConsumerFeatures", 1 );
-			#endregion
 
-			#region Active History
+			// Active History
 			output( "Disabling Active History" );
 
 			foreach ( var regKey in ACTIVE_HISTORY_KEYS ) {
 				Utilities.ChangeDWordRegistryKey( Registry.LocalMachine, HKLM_ACTIVITY_HISTORY_LOCATION, regKey );
 			}
-			#endregion
 
-			#region Location
+			// Location Tracking
 			output( "Disabling Location Tracking." );
 
 			DisableLocationTracking();
-			#endregion
 
-			#region Maps
+			// Map Updates
 			output( "Disabling Automatic Maps updates." );
 
 			Utilities.ChangeDWordRegistryKey( Registry.CurrentUser, HKLM_MAP_UPDATE_LOCATION, MAP_UPDATE_KEY );
-			#endregion
 
-			#region Disabling Feedback
+			// Feedback
 			output( "Disabling Feedback." );
 
 			Utilities.ChangeDWordRegistryKey( Registry.CurrentUser, HKCU_FEEDBACK_LOCATION, "NumberOfSIUFInPeriod" );
@@ -405,161 +401,138 @@ namespace CTTDebloatNET.Models {
 			foreach ( var task in FEEDBACK_TASKS ) {
 				await DisableSchedule( task );
 			}
-			#endregion
 
-			#region Tailored Experiences
+			// Tailored Experience
 			output( "Disabling Tailored Experience." );
 
-			Utilities.ChangeDWordRegistryKey( Registry.CurrentUser, HKLM_CLOUD_CONTENT_POLICY_LOCATION, TAILORED_KEY, 1 );
-			#endregion
+			Utilities.ChangeDWordRegistryKey( Registry.CurrentUser, HKCU_TAILORED_LOCATION, TAILORED_KEY, 1 );
 
-			#region Ad ID
+			// Advertising ID
 			output( "Disabling Advertising ID." );
 
 			Utilities.ChangeDWordRegistryKey( Registry.LocalMachine, HKLM_ADVERTISING_ID, ADVERTISING_ID_KEY, 1 );
-			#endregion
 
-			#region Error Reporting
+			// Error Reporting
 			output( "Disabling Error Reporting." );
 
 			Utilities.ChangeDWordRegistryKey( Registry.LocalMachine, HKLM_ERROR_REPORTING_LOCATION, "Disabled", 1 );
 
 			await DisableSchedule( ERROR_REPORTING_TASK );
-			#endregion
 
-			#region Windows Update
+			// Windows Update
 			output( "Restricting Windows to local only." );
 
 			Utilities.ChangeDWordRegistryKey( Registry.LocalMachine, HKLM_DELIVERY_OPTIMIZATION_LOCATION, "DODownloadMode", 1 );
-			#endregion
 
-			#region Diagnostics
+			// Diagnostics
 			output( "Disabling Diagnostic Tracking Services." );
 
 			await ToggleService( DIAGNOSTIC_TRACKING_SERVICE );
-			#endregion
 
-			#region WAP Push Service
+			// WAP
 			output( "Killing WAP Push Service" );
 
 			await ToggleService( WAP_PUSH_SERVICE );
-			#endregion
 
-			#region F8 Boot Menu Options
+			// F8 Boot Menu Option
 			output( "Enabling F8 Boot Menu Option." );
 
 			await ProgramHandler.StartProgram( "bcdedit", "/set \"{current}\" bootmenupolicy legacy" );
-			#endregion
 
-			#region Home Group
+			// Home Groups
 			output( "Disabling Home Groups." );
 
 			await ToggleService( HOME_GROUP_LISTENER_SERVICE );
 			await ToggleService( HOME_GROUP_PROVIDER_SERVICE );
-			#endregion
 
-			#region Remote Assistance
+			// Remote Assistance
 			output( "Disabling Remote Assistance." );
 
 			Utilities.ChangeDWordRegistryKey( Registry.LocalMachine, HKLM_REMOTE_ASSISTANCE_LOCATION, "fAllowToGetHelp" );
-			#endregion
 
-			#region Storage Sense
+			// Storage Sense
 			output( "Disabling Storage Sense." );
 
 			try {
 				Registry.LocalMachine.DeleteSubKeyTree( HKCU_STORAGE_SENSE );
 			} catch ( ArgumentException ) {
+				output( "Looks like Storage Sense is already disabled." );
 			}
-			#endregion
 
-			#region Superfetch
+			// Superfetch
 			output( "Disabling Superfetch." );
 
 			await ToggleService( SUPER_FETCH_SERVICE );
-			#endregion
 
-			#region Hibernation
+			// Hibernation
 			output( "Disabling Hibernation." );
 
 			Utilities.ChangeDWordRegistryKey( Registry.LocalMachine, HKLM_HIBERNATION_LOCATIONS[0], "HibernationEnabled" );
 			Utilities.ChangeDWordRegistryKey( Registry.LocalMachine, HKLM_HIBERNATION_LOCATIONS[1], "ShowHibernateOption" );
-			#endregion
 
-			#region File Operation Details
+			// File Operation Details
 			output( "Showing File Operations Details." );
 
 			Utilities.ChangeDWordRegistryKey( Registry.CurrentUser, HKCU_FILE_OPERATIONS_LOCATION, FILE_OPERATION_KEY, 1 );
-			#endregion
 
-			#region Task View
+			// Task View
 			output( "Hiding Task View." );
 
 			Utilities.ChangeDWordRegistryKey( Registry.CurrentUser, HKCU_ADVANCE_LOCATION, SHOW_TASK_VIEW_BUTTON_KEY );
-			#endregion
 
-			#region Peoples
+			// People Icon
 			output( "Hiding People Icon." );
 
 			Utilities.ChangeDWordRegistryKey( Registry.CurrentUser, HKCU_PEOPLE_ICON_LOCATION, PEOPLE_ICON_KEY );
-			#endregion
 
-			#region Tray Icons
+			// Tray Icons
 			output( "Hiding Tray Icons." );
 
 			Utilities.ChangeDWordRegistryKey( Registry.CurrentUser, HKCU_EXPLORER_LOCATION, AUTO_TRAY_KEY );
-			#endregion
 
-			#region Numlock
+			// Numlock
 			output( "Enabling NumLock after startup." );
 
 			try {
 				Utilities.ChangeDWordRegistryKey( Registry.Users, HKU_KEYBOARD, INIT_KEYBOARD_KEY, INIT_KEYBOARD_VALUE );
 			} catch ( ArgumentException ) {
 			}
-			#endregion
 
-			#region Default Explorer Location
+			// Default Explorer Location
 			output( "Changing default Explorer view to This PC." );
 
 			Utilities.ChangeDWordRegistryKey( Registry.CurrentUser, HKCU_EXPLORER_LOCATION, LAUNCH_TO_KEY, 1 );
-			#endregion
 
-			#region Removing 3D Objects
+			// 3D Objects
 			output( "Hiding 3D Objects icon from This PC." );
 
 			try {
 				Registry.LocalMachine.DeleteSubKeyTree( HKLM_3D_FOLDER_ICON_LOCATION );
 			} catch ( ArgumentException ) {
 			}
-			#endregion
 
-			#region IRP Stack Size
+			// IRP Stack Size
 			output( "Changing IRP Stack Size." );
 
 			Utilities.ChangeDWordRegistryKey( Registry.LocalMachine, HKLM_IRP_STACK_SIZE_LOCATION, IRP_STACK_KEY, 20 );
-			#endregion
 
-			#region Limiting svhost
+			// Service Limit
 			output( "Grouping svhost.exe processes." );
 
 			GroupServiceHostProcesses();
-			#endregion
 
-			#region Disabling News and Interests
+			// News and Interests
 			output( "Disabling News and Interests" );
 
 			Utilities.ChangeDWordRegistryKey( Registry.CurrentUser, HKCU_WINDOWS_FEEDBACK_LOCATION, ENABLE_FEEDBACK_KEY );
 			Utilities.ChangeDWordRegistryKey( Registry.CurrentUser, HKCU_WINDOWS_FEEDBACK_LOCATION, FEEDS_TASKBAR_VIEW_MODE_KEY, 2 );
-			#endregion
 
-			#region Removing Meet Now
+			// Meet Now
 			output( "Removing the \"Meet Now\" button." );
 
 			Utilities.ChangeDWordRegistryKey( Registry.CurrentUser, HKCU_EXPLORER_POLICY_LOCATION, "HideSCAMeetNow", 1 );
-			#endregion
 
-			#region AutoLogger
+			// AutoLogger
 			output( "Removing AutoLogger file and restricting directories." );
 
 			if ( File.Exists( AUTO_LOGGER_FILE ) ) {
@@ -567,25 +540,21 @@ namespace CTTDebloatNET.Models {
 			}
 
 			await ProgramHandler.StartProgram( "icacls", $"\"{AUTO_LOGGER_DIRECTORY}\" /deny SYSTEM:`(OI`)(CI`)F" );
-			#endregion
 
-			#region Diagnostics Tracking
+			// Diagnostic Tracking
 			output( "Stopping and disabling Diagnostics Tracking Service." );
 
 			await ToggleService( DIAGNOSTIC_TRACKING_SERVICE );
-			#endregion
 
-			#region File Extensions
+			// File Extensions
 			output( "Showing known file extensions." );
 
 			Utilities.ChangeDWordRegistryKey( Registry.CurrentUser, HKCU_ADVANCE_LOCATION, HIDE_FILE_EXT_KEY );
-			#endregion
 
-			#region Services to Manual
+			// Services to Manual
 			output( "Setting some services to manual." );
 
 			SetServicesToManual();
-			#endregion
 
 			async Task ShutUpWindows() {
 				const string SHUT_UP_10     = "https://dl5.oo-software.com/files/ooshutup10/OOSU10.exe";
